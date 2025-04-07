@@ -3,6 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import os
+
+IMG_DIR = "images" 
+os.makedirs(IMG_DIR, exist_ok=True)
+
 
 # Read data from CSV files into pandas DataFrames
 def load_data():
@@ -19,13 +24,11 @@ def calc_star_wars_percentage(merged):
     licensed = merged[merged['is_licensed'] == True] # Filter out only licensed sets
     star_wars = licensed[licensed['parent_theme'] == 'Star Wars'] # Filter Star Wars licensed sets
     the_force = round((len(star_wars) / len(licensed)) * 100, 2)  # Calculate the percentage of Star Wars themed sets
-    #print(f"Percentage of Star Wars themed licenses is: {the_force}%.")
     return the_force, star_wars
 
 def calc_peak_star_wars_year(star_wars):
     """In which year was the highest number of Star Wars sets released?"""
     new_era = int(star_wars.groupby('year').size().sort_values(ascending=False).index[0])
-    #print(f"The year with the highest number of Star Wars sets released was {new_era}.")
     return new_era
 
 def plot_sets_over_time(merged):
@@ -42,7 +45,14 @@ def plot_sets_over_time(merged):
     plt.yticks(range(0,800,50))
     plt.xticks(range(1945,2025,5), rotation=45)
     plt.grid(True, linestyle="--", alpha=0.5)
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "sets_over_time.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_top_themes_by_set_count(merged):
     """What are the top 5 most common parent themes in terms of the number of sets released?"""
@@ -60,7 +70,14 @@ def plot_top_themes(themes_by_set):
     plt.ylabel('Number of sets', fontsize=12, fontweight='bold')
     plt.yticks(range(0,1200,100))
     plt.grid(True, linestyle="--", alpha=0.5)
-    plt.show()
+
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "top_themes.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_licensed_percentage(merged):
     """What percentage of all LEGO sets are from licensed themes?"""
@@ -71,10 +88,17 @@ def calc_licensed_percentage(merged):
 
 def plot_licenses_percentage(licensed_counts):
     """Plot the percentage of licensed vs non-licensed sets (pie chart)"""
-    plt.figure(figsize=(7, 7))
+    plt.figure(figsize=(5, 5))
     plt.pie(x=licensed_counts, labels=['Not Licensed', 'Licensed'], autopct='%1.1f%%', colors=['#3a8aa5', '#ffc49b'], startangle=90, wedgeprops={'edgecolor': 'black'})
     plt.title('Percentage of Licensed vs. Non-Licensed LEGO Sets', fontsize=14, fontweight='bold', pad=15)
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "licensed_percentage.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_licensed_highest_sets(merged):
     """Which licensed themes have the highest number of sets?"""
@@ -94,7 +118,14 @@ def plot_licensed_highest_sets(licensed_themes):
     plt.ylabel('Number of Sets', fontweight='bold')
     plt.yticks(range(10,615,20))
     plt.grid(True, linestyle="--", alpha=0.5)
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "licensed_highest.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_set_count_for_top_themes(merged):
     """How has the number of sets of the top 5 parent themes changed over time?"""
@@ -126,7 +157,14 @@ def plot_set_count_for_top_themes(top_5_themes_data):
     plt.legend(title='Parent Theme', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "top5_trends.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_licensed_non_licensed_sets(merged):
     """What are the trends in licensed vs. non-licensed LEGO sets over the years? (Stacked Bar Chart or Line Chart)"""
@@ -150,9 +188,15 @@ def plot_licensed_non_licensed_sets(licensed_trends_pivot):
     plt.legend(title='Set Type', loc='upper left', labels=['Non-Licensed', 'Licensed'])
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
-    plt.show()
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "licensed_trend.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
-def plot_set_num_licensed_non_licensed(merged):
+def box_plot_set_comparison_licensed_non_licensed(merged):
     """Do licensed LEGO sets tend to have more parts compared to non-licensed ones?"""
     plt.figure(figsize=(8, 6))
     sns.boxplot(data=merged, x='is_licensed', y='num_parts', palette='pastel')
@@ -162,7 +206,14 @@ def plot_set_num_licensed_non_licensed(merged):
     plt.ylim(0, merged['num_parts'].quantile(0.95))
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.tight_layout()
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "boxplot_comparison.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_subthemes_top_3_parent_themes(merged):
     """What are the most common sub-themes within the top 3 parent themes?"""
@@ -185,9 +236,16 @@ def plot_subthemes_top_3_parent_themes(subtheme_counts):
     plt.grid(axis='y', linestyle='--', alpha=0.5)
     plt.tight_layout()
     plt.legend(title='Parent Theme')
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "subthemes_top3.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
-def calc_disrtibution_set_sizes(merged):
+def calc_distribution_set_sizes(merged):
     """What is the distribution of set sizes (number of parts) across all sets?"""
     if 'num_parts' in merged.columns:
         merged_df = merged.dropna(subset=['num_parts']) # Drop rows with missing 'num_parts' values
@@ -208,7 +266,14 @@ def plot_distribution_set_sizes(merged_df):
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.xlim(0, merged_df['num_parts'].quantile(0.95))
     plt.tight_layout()
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "distribution_set_sizes.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_top_new_theme_year(merged):
     """Which year had the highest number of new themes introduced?"""
@@ -229,7 +294,14 @@ def plot_top_new_theme_year(themes_per_year):
     plt.yticks(range(0,40,2))
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.tight_layout()
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "top_new_themes_year.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_set_compexity_top_themes(merged):
     """What are the trends in LEGO set complexity (average number of parts) for the top 5 themes over time?"""
@@ -250,7 +322,14 @@ def plot_set_complexity_top_themes(avg_parts_trend):
     plt.legend(title='Parent Theme')
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.tight_layout()
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "set_complexity_top_themes.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
 def calc_theme_set_complexity_corr(merged):
     """How does the number of sets per theme correlate with the number of parts per set?"""
@@ -270,5 +349,12 @@ def plot_theme_set_complexity_corr(theme_stats):
     plt.ylim((0, theme_stats['avg_parts'].quantile(0.95)))
     plt.legend(title='Total Sets')
     plt.tight_layout()
-    plt.show()
+    
+    # Save plot 
+    if not os.path.exists(IMG_DIR):
+        os.makedirs(IMG_DIR)
+    path = os.path.join(IMG_DIR, "theme_set_complexity_corr.png")
+    plt.tight_layout()
+    plt.savefig(path, bbox_inches='tight')
+    plt.close()
 
