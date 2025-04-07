@@ -206,7 +206,7 @@ def plot_distribution_set_sizes(merged_df):
     plt.yticks(range(0,5500,500))
     plt.xticks(range(0,700,50))
     plt.grid(True, linestyle='--', alpha=0.5)
-    plt.xlim(0, merged['num_parts'].quantile(0.95))
+    plt.xlim(0, merged_df['num_parts'].quantile(0.95))
     plt.tight_layout()
     plt.show()
 
